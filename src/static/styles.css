@@ -1,0 +1,73 @@
+.centered-medium-box {
+    display: flex;
+    flex-direction: column;
+}
+
+
+#logo-lemma-box{
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+}
+
+#logo-box{
+    display: flex;
+    align-content: center;
+}
+
+.logo{
+    font-size: calc(1.375rem + 1.5vw) !important;
+    color: #6c757d;
+}
+
+.lemma{
+    color: #6c757d;
+}
+
+
+#mainBox {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#centeredBox {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-top: 4%;
+    padding-bottom: 4%;
+    gap: 5%;
+}
+
+#config-textarea-box {
+    width: 100%;
+    height: 50%;
+}
+
+#config-textarea {
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    color: #6c757d;
+}
+
+#workflowResultBox {
+    position: relative;
+}
+#workflowResultBox textarea {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+}
+#workflowResultBox button {
+    position: absolute;
+    top: 10px;
+    right: 25px;
+}
