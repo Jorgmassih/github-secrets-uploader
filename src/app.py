@@ -1,24 +1,30 @@
 from typing import Optional
 from fastapi import FastAPI, Header, File, UploadFile, Form
 from fastapi.responses import FileResponse
-from utils.create_secrets import SecretsManager
-from utils.parse_ini import extract_secrets
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from os import path
+from .secrets_manager import SecretsManager
+from .utils import *
 import io
 
 
 app = FastAPI()
 
+current_dir = path.dirname(path.abspath(__file__))
+static_dir = path.join(current_dir, 'static')
 
 @app.get("/")
 def default():
-    return FileResponse("static/index.html")
+    index_html = path.join(static_dir, 'index.html')
+    return FileResponse(index_html)
 
 
 @app.get("/static/{filename:path}")
 def get_static(filename: str = "index.html"):
-    return FileResponse(f"static/{filename}")	
+
+    static_file = path.join(static_dir, filename)
+    return FileResponse(static_file)	
 
 
 @app.post("/submit/{submit_type}")
