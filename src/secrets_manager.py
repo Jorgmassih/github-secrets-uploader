@@ -37,7 +37,7 @@ class SecretsManager:
             commands.append(f"    echo '{secret[0]}=${{{{ secrets.{secret[0]} }}}}' >> .env")
         return '\n'.join(commands)
 
-    def add_secrets_to_github(self) -> str:
+    async def add_secrets_to_github(self) -> str:
         public_key = self.__get_public_key()
 
         # Iterate over secrets

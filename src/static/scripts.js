@@ -60,6 +60,10 @@ function clearForm() {
 
 // Submit
 function submit() {
+    // Set Loadding Status
+    setStatusButton(false, 'clearBtn'); 
+    setLoadingButton(true, 'submitBtn');
+
     let file = document.getElementById('formFile').files[0];
     let formData = new FormData();
 
@@ -72,7 +76,6 @@ function submit() {
     formData.append('github_token', document.getElementById('token').value);
     formData.append('repo_owner', document.getElementById('ownerName').value);
 
-
     let xhr = new XMLHttpRequest();
     xhr.open('POST', `/submit/${submitType}`);
     xhr.send(formData);
@@ -80,26 +83,27 @@ function submit() {
         if (xhr.status == 200) {
             console.log('File sent');
             let res = JSON.parse(xhr.response);
-            document.getElementById('workflowResult').value = res['ci_tasks'];
-            document.getElementById('workflowResultBox').classList.remove('d-none');
-            // hide all excep method buttons
-            document.getElementById('methodsBox').classList.add('d-none');
 
-            // add copy button inside textarea
-            let copyBtn = document.createElement('button');
-            copyBtn.classList.add('btn', 'btn-outline-secundary', 'btn-sm', 'btn-block');
-            copyBtn.innerHTML = 'Copy';
-            copyBtn.onclick = function () {
-                copyToClipboard(document.getElementById('workflowResult').value);
-            }
-            document.getElementById('workflowResultBox').appendChild(copyBtn);
+            // Set modal content text
+            document.getElementById('workflow-step-modal-textarea').value = res.ciStep;
+
+            // Add on click event to the button
+            document.getElementById('workflow-setp-modal-save').onclick = function () {
+                navigator.clipboard.writeText(res.ciStep);
+            };
+
+            // Show modal
+            let worklowStep = new bootstrap.Modal(document.getElementById('workflow-step-modal'))
+            worklowStep.show();
 
         }
         else {
             console.log('Error: ' + xhr.status);
         }
+        // Unset Loadding Status
+        setStatusButton(true, 'clearBtn');
+        setLoadingButton(false, 'submitBtn');
     }
-
 }
 
 // Utils functions
@@ -112,6 +116,10 @@ function onLoad() {
         theme: 'snow' // or 'bubble'
     });
 
+    // Set onclick event to the buttons
+    document.getElementById('submitBtn').onclick = function () {submit();};
+    document.getElementById('clearBtn').onclick = function () {clearForm();};
+    document.getElementById('textAreaButton').onclick = function () {onTextAreaClicked();};
     
 }
 
@@ -124,5 +132,67 @@ function disableTextArea() {
     quill.deleteText(0, quill.getLength());
     // Hide textarea box
     document.getElementById('config-textarea-box').classList.add('d-none');
+}
 
+function setStatusButton(desiredStatus, buttonId){
+    if(!desiredStatus){    
+        document.getElementById(buttonId).disabled = true;
+        return;
+    }
+    document.getElementById(buttonId).disabled = false;
+}
+
+function setLoadingButton(status, buttonId){
+    if (!status){
+        // Remove child only if it is a span so it doesn't show the loading animation
+       for (let i = 0; i < document.getElementById(buttonId).childNodes.length; i++){
+           if (document.getElementById(buttonId).childNodes[i].nodeName === 'SPAN'){
+               document.getElementById(buttonId).removeChild(document.getElementById(buttonId).childNodes[i]);
+           }
+       }
+       setStatusButton(true, buttonId);
+       return;
+    }
+
+    //add chlid span
+    let span = document.createElement('span');
+    span.classList.add('spinner-border', 'spinner-border-sm');
+
+    // disable button
+    setStatusButton(false, buttonId);
+    
+    span.setAttribute('role', 'status');
+    span.setAttribute('aria-hidden', 'true');
+    span.style.marginRight = '7px'
+    document.getElementById(buttonId).prepend(span);
+}
+
+function throwToast(message='hello') {
+    let toastWrapper = document.getElementById('toast-wrapper');
+    // let toast_template = `<div class="toast align-items-center text-bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+    //     <div class="d-flex">
+    //         <div class="toast-body">
+    //             ${message}
+    //         </div>
+    //         <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    //     </div>
+    // </div>`;
+    
+    let toast_template = `<!-- Then put toasts within -->
+    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header">
+        <img src="..." class="rounded me-2" alt="...">
+        <strong class="me-auto">Bootstrap</strong>
+        <small class="text-muted">just now</small>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body">
+        See? Just like this.
+      </div>
+    </div>` 
+    toastWrapper.innerHTML += toast_template; 
+
+    console.log(toastWrapper.innerHTML);
+    toast = new bootstrap.Toast(toastWrapper.lastChild);
+    toast.show();
 }

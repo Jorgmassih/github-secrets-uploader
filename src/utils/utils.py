@@ -1,6 +1,6 @@
 import configparser
 
-def extract_secrets(config_file) -> list:
+async def extract_secrets(config_file) -> list:
     config = configparser.ConfigParser()
     config.read_file(config_file)
 

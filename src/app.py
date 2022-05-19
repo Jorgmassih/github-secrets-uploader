@@ -36,9 +36,10 @@ async def submission(submit_type: str,
                 file: Optional[UploadFile] = File(None)):
     secrets = []
     if submit_type == "file":
-        #content = await file.read()
-        sfile = file
-        #content = content.decode("utf-8")
+        sfile = await file.read()
+        sfile = sfile.decode("utf-8")
+        sfile = io.StringIO(sfile)
+        
 
     elif submit_type == "text":
         sfile = io.StringIO(text_area)
@@ -46,14 +47,14 @@ async def submission(submit_type: str,
     else:
         return {"error": "Invalid submit type"}
 
-    secrets = extract_secrets(sfile)
+    secrets = await extract_secrets(sfile)
     
     if not secrets:
         return {"error": "No secrets found, Make sure you have a section in your file or it is a valid ini file"}
 
-    #sm = SecretsManager(f'{repo_owner}/{repo_name}', github_token, secrets)
-    #ci_tasks = sm.add_secrets_to_github()
-    
-    #return {'secrets': secrets, 'repo_name': repo_name, 'ci_tasks': ci_tasks}
+    sm = SecretsManager(f'{repo_owner}/{repo_name}', github_token, secrets)
+    ci_step = await sm.add_secrets_to_github()
+
+    return {'ciStep': ci_step}
 
 

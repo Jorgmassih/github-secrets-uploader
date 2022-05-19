@@ -28,12 +28,13 @@
 </head>
 
 <body onload="onLoad()">
+
     <div id="mainBox" class="container">
         <div id=centeredBox>
             <div id="logo-lemma-box">
                 <div id="logo-box">
                     <span class="logo material-symbols-outlined">lock</span>
-                    <h1 class="logo" style="font-family: 'Secular One', sans-serif;">GITH**UB SEC*RETS</h1>
+                    <h1 class="logo" style="font-family: 'Secular One', sans-serif;">GI**UB SEC*ETS</h1>
                 </div>
                 <h6 class="lemma">Upload your darkests secrets from INI format</h6>
             </div>
@@ -65,23 +66,39 @@
                         <hr>
                     </div>
                 </div>
-                <button id="textAreaButton" type="button" class="btn btn-secondary btn-lg"
-                    onclick="onTextAreaClicked()">Paste in text area</button>
+                <button id="textAreaButton" type="button" class="btn btn-secondary btn-lg">Paste in text area</button>
             </div>
             <div id="config-textarea-box" class="form-floating d-none">
                 <div class="form-control" id="config-textarea"></div>
                 <label for="config-textarea">Paste or type your INI Config</label>
             </div>
             <div class="actions-buttons">
-                <button id="clearBtn" type="button" disabled onclick={clearForm()}
+                <button id="clearBtn" type="button" disabled
                     class="btn btn-outline-secondary btn-sm btn-block">Clear</button>
-                <button id="submitBtn" type="button" disabled onclick={submit()}
+                <button id="submitBtn" type="button" disabled
                     class="btn btn-outline-success btn-sm btn-block">Let's go</button>
             </div>
 
-            <div id="workflowResultBox" class="form-floating d-none textarea-box">
-                <textarea class="form-control" readonly style="height: 500px" id="workflowResult"></textarea>
-                <label for="workflowResult">Workflow result</label>
+            <button onclick="throwToast()">set toast</button>
+
+            <!-- Text modal -->
+            <div class="modal fade" id="workflow-step-modal" tabindex="-1" aria-labelledby="workflow-step-label" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="workflow-step-label">Workflow Step</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div id="workflow-step-modal-body" class="modal-body">
+                            <p>If you're planning to use this secrets in your workflow, paste the following step text on it:</p>
+                            <textarea class="form-control" readonly id="workflow-step-modal-textarea"></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" id="workflow-setp-modal-save" class="btn btn-primary" data-bs-dismiss="modal">Copy and Close</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
