@@ -1,5 +1,5 @@
 from typing import Optional
-from fastapi import FastAPI, Header, File, UploadFile, Form
+from fastapi import FastAPI, Header, File, UploadFile, Form, Query
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -7,6 +7,7 @@ from os import path
 from .secrets_manager import SecretsManager
 from .utils import *
 import io
+import requests
 
 
 app = FastAPI()
@@ -20,11 +21,35 @@ def default():
     return FileResponse(index_html)
 
 
+@app.get('/oauth/github')
+async def oauth(
+    code: str = Query(..., description='Github code after authorization to get access token', example='2cb5c1dd95440b6789db'),
+    installation_id: str = Query(...),
+    setup_action: str = Query(...)):
+
+    print(code, installation_id, setup_action)
+
+    data = {
+        "client_id": 'Iv1.ac8076346c86006b',
+        "client_secret": "e9fcb864ed9bbaef0d2f215e753d827a6f1f15cf",
+        "code": code
+    }
+    req = requests.post('https://github.com/login/oauth/access_token', data=data)
+    print(req.text)
+    
+
 @app.get("/static/{filename:path}")
 def get_static(filename: str = "index.html"):
 
     static_file = path.join(static_dir, filename)
     return FileResponse(static_file)	
+
+
+@app.get('/github-client-id')
+def get_client_id():
+    return {
+        'clientId':'724c2a848170c988b07c'
+    }
 
 
 @app.post("/submit/{submit_type}")

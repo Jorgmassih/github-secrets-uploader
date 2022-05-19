@@ -58,6 +58,19 @@ function clearForm() {
     document.getElementById('workflowResultBox').classList.add('d-none');
 }
 
+function login() {
+   // Get Github App Client ID
+    let xhr = new XMLHttpRequest();
+    xhr.open('get', '/github-client-id');
+    xhr.send();
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            let clientId = JSON.parse(xhr.response)['clientId'];
+            window.location.href = `https://github.com/login/oauth/authorize?client_id=${clientId}`;    
+        }
+    }
+}
+
 // Submit
 function submit() {
     let file = document.getElementById('formFile').files[0];
